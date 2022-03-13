@@ -18,7 +18,8 @@ creating detection and segmentation models using PyTorch 1.0.
 Follow the commands below to set up `maskrcnn_benchmark`.
 ```bash
 cd $HOME
-git clone https://github.com/cardboardcode/maskrcnn-benchmark.git --branch onnx_stage_mrcnn 
+git clone https://github.com/cardboardcode/maskrcnn-benchmark.git --branch onnx_stage_mrcnn
+cd maskrcnn-benchmark
 conda create --name maskrcnn-benchmark python=3.6
 conda activate maskrcnn-benchmark
 pip install -r requirements.txt
