@@ -23,9 +23,16 @@ cd maskrcnn-benchmark
 conda create --name maskrcnn-benchmark python=3.6
 conda activate maskrcnn-benchmark
 pip install -r requirements.txt
+python setup.py build install
 ```
 
 ## **Verify**
+Check that `maskrcnn_benchmark` has been successfully installed.
+```bash
+pip freeze | grep mask
+# maskrcnn-benchmark==0.1
+```
+
 ```bash
 python demo/export_to_onnx.py
 ```
