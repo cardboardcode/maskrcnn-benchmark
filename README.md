@@ -1,9 +1,9 @@
-# Faster R-CNN and Mask R-CNN in PyTorch 1.0
+# **maskrcnn-benchmark**
 
 This project aims at providing the necessary building blocks for easily
 creating detection and segmentation models using PyTorch 1.0.
 
-![alt text](demo/demo_e2e_mask_rcnn_X_101_32x8d_FPN_1x.png "from http://cocodataset.org/#explore?id=345434")
+> This repository is finetuned to spearhead a quick way to set up and export .pth files to .onnx models.
 
 ## Highlights
 - **PyTorch 1.0:** RPN, Faster R-CNN and Mask R-CNN implementations that matches or exceeds Detectron accuracies
@@ -13,6 +13,35 @@ creating detection and segmentation models using PyTorch 1.0.
 - **Batched inference:** can perform inference using multiple images per batch per GPU
 - **CPU support for inference:** runs on CPU in inference time. See our [webcam demo](demo) for an example
 - Provides pre-trained models for almost all reference Mask R-CNN and Faster R-CNN configurations with 1x schedule.
+
+## **Setup**
+Follow the commands below to set up `maskrcnn_benchmark`.
+```bash
+cd $HOME
+git clone https://github.com/cardboardcode/maskrcnn-benchmark.git --branch onnx_stage_mrcnn 
+conda create --name maskrcnn-benchmark python=3.6
+conda activate maskrcnn-benchmark
+pip install -r requirements.txt
+```
+
+## **Verify**
+```bash
+python demo/export_to_onnx.py
+```
+You should see a similar **output** as shown below:
+```bash
+/home/cardboardvoice/anaconda3/envs/maskrcnn-benchmark/lib/python3.6/site-packages/torch/nn/functional.py:2390: UserWarning: nn.functional.upsample is deprecated. Use nn.functional.interpolate instead.
+  warnings.warn("nn.functional.upsample is deprecated. Use nn.functional.interpolate instead.")
+demo/export_to_onnx.py:49: TracerWarning: Converting a tensor to a Python integer might cause the trace to be incorrect. We can't record the data flow of Python values, so this value will be treated as a constant in the future. This means that the trace might not generalize to other inputs!
+  image_list = ImageList(image.unsqueeze(0), [(int(image.size(-2)), int(image.size(-1)))])
+/home/cardboardvoice/anaconda3/envs/maskrcnn-benchmark/lib/python3.6/site-packages/maskrcnn_benchmark-0.1-py3.6-linux-x86_64.egg/maskrcnn_benchmark/structures/bounding_box.py:28: TracerWarning: Converting a tensor to a Python boolean might cause the trace to be incorrect. We can't record the data flow of Python values, so this value will be treated as a constant in the future. This means that the trace might not generalize to other inputs!
+  if bbox.size(-1) != 4:
+/home/cardboardvoice/anaconda3/envs/maskrcnn-benchmark/lib/python3.6/site-packages/maskrcnn_benchmark-0.1-py3.6-linux-x86_64.egg/maskrcnn_benchmark/modeling/rpn/inference.py:105: TracerWarning: torch.tensor results are registered as constants in the trace. You can safely ignore this warning if you use this function to create tensors out of constant variables that would be the same every time you call this function. In any other case, this might cause the trace to be incorrect.
+...
+2022-03-13 15:31:50.149424792 [W:onnxruntime:, graph.cc:1074 Graph] Initializer 6945 appears in graph inputs and will not be treated as constant value/weight. This may prevent some of the graph optimizations, like const folding. Move it out of graph inputs if there is no need to override it, by either re-generating the model with latest exporter/converter or with the tool onnxruntime/tools/python/remove_initializer_from_input.py.
+Avg run time of onnx model: 0.16126501449980424
+```
+`mask_rcnn_R_50_FPN_1x.onnx` should be generated.
 
 ## Webcam and Jupyter notebook demo
 
@@ -96,7 +125,7 @@ ln -s /path_to_VOCdevkit_dir datasets/voc
 ```
 
 P.S. `COCO_2017_train` = `COCO_2014_train` + `valminusminival` , `COCO_2017_val` = `minival`
-      
+
 
 You can also configure your own paths to the datasets.
 For that, all you need to do is to modify `maskrcnn_benchmark/config/paths_catalog.py` to
@@ -212,16 +241,6 @@ Once you have created your dataset, it needs to be added in a couple of places:
 - [`maskrcnn_benchmark/data/datasets/__init__.py`](maskrcnn_benchmark/data/datasets/__init__.py): add it to `__all__`
 - [`maskrcnn_benchmark/config/paths_catalog.py`](maskrcnn_benchmark/config/paths_catalog.py): `DatasetCatalog.DATASETS` and corresponding `if` clause in `DatasetCatalog.get()`
 
-### Testing
-While the aforementioned example should work for training, we leverage the
-cocoApi for computing the accuracies during testing. Thus, test datasets
-should currently follow the cocoApi for now.
-
-To enable your dataset for testing, add a corresponding if statement in [`maskrcnn_benchmark/data/datasets/evaluation/__init__.py`](maskrcnn_benchmark/data/datasets/evaluation/__init__.py):
-```python
-if isinstance(dataset, datasets.MyDataset):
-        return coco_evaluation(**args)
-```
 
 ## Finetuning from Detectron weights on custom datasets
 Create a script `tools/trim_detectron_model.py` like [here](https://gist.github.com/wangg12/aea194aa6ab6a4de088f14ee193fd968).
@@ -231,32 +250,9 @@ Then you can simply point the converted model path in the config file by changin
 
 For further information, please refer to [#15](https://github.com/facebookresearch/maskrcnn-benchmark/issues/15).
 
-## Troubleshooting
-If you have issues running or compiling this code, we have compiled a list of common issues in
-[TROUBLESHOOTING.md](TROUBLESHOOTING.md). If your issue is not present there, please feel
-free to open a new issue.
-
-## Citations
-Please consider citing this project in your publications if it helps your research. The following is a BibTeX reference. The BibTeX entry requires the `url` LaTeX package.
+## **Uninstall**
+Follow the commands to completely remove `maskrcnn_benchmark`:
+```bash
+conda deactivate
+conda env remove --name maskrcnn-benchmark
 ```
-@misc{massa2018mrcnn,
-author = {Massa, Francisco and Girshick, Ross},
-title = {{maskrcnn-benchmark: Fast, modular reference implementation of Instance Segmentation and Object Detection algorithms in PyTorch}},
-year = {2018},
-howpublished = {\url{https://github.com/facebookresearch/maskrcnn-benchmark}},
-note = {Accessed: [Insert date here]}
-}
-```
-
-## Projects using maskrcnn-benchmark
-
-- [RetinaMask: Learning to predict masks improves state-of-the-art single-shot detection for free](https://arxiv.org/abs/1901.03353). 
-  Cheng-Yang Fu, Mykhailo Shvets, and Alexander C. Berg.
-  Tech report, arXiv,1901.03353.
-- [FCOS: Fully Convolutional One-Stage Object Detection](https://arxiv.org/abs/1904.01355).
-  Zhi Tian, Chunhua Shen, Hao Chen and Tong He.
-  Tech report, arXiv,1904.01355. [[code](https://github.com/tianzhi0549/FCOS)]
-
-## License
-
-maskrcnn-benchmark is released under the MIT license. See [LICENSE](LICENSE) for additional details.
