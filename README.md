@@ -5,15 +5,6 @@ creating detection and segmentation models using PyTorch 1.0.
 
 > This repository is finetuned to spearhead a quick way to set up and export .pth files to .onnx models.
 
-## Highlights
-- **PyTorch 1.0:** RPN, Faster R-CNN and Mask R-CNN implementations that matches or exceeds Detectron accuracies
-- **Very fast**: up to **2x** faster than [Detectron](https://github.com/facebookresearch/Detectron) and **30%** faster than [mmdetection](https://github.com/open-mmlab/mmdetection) during training. See [MODEL_ZOO.md](MODEL_ZOO.md) for more details.
-- **Memory efficient:** uses roughly 500MB less GPU memory than mmdetection during training
-- **Multi-GPU training and inference**
-- **Batched inference:** can perform inference using multiple images per batch per GPU
-- **CPU support for inference:** runs on CPU in inference time. See our [webcam demo](demo) for an example
-- Provides pre-trained models for almost all reference Mask R-CNN and Faster R-CNN configurations with 1x schedule.
-
 ## **Setup**
 Follow the commands below to set up `maskrcnn_benchmark`.
 ```bash
@@ -23,7 +14,7 @@ cd maskrcnn-benchmark
 conda create --name maskrcnn-benchmark python=3.6
 conda activate maskrcnn-benchmark
 pip install -r requirements.txt
-python setup.py build install
+python setup.py build develop
 ```
 
 ## **Verify**
